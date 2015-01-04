@@ -11,6 +11,7 @@ float sizeOfAxis = 10;
 int grabSlider = 0;
 int isIKMode = 0;
 int isStartIKMode = 0;
+int previousState = 0;
 float slidePos1, slidePos2;
 
 float[][] y0 = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
@@ -30,11 +31,35 @@ void draw() {
 	drawPanel();	
 
 	if (isStartIKMode==1) {
+
 		float[] tmp = calcInverseKinematics(mouseX - centerPos, centerPos - mouseY, a1, a2);
-		drawBody(tmp[0], tmp[1]);
-		drawBody(tmp[2], tmp[3]);
-	} else {
+
+		if (previousState == 1) {
+			if (tmp[1] > 0) {
+				theta1 = tmp[0];
+				theta2 = tmp[1];
+			} else {
+				theta1 = tmp[2];
+				theta2 = tmp[3];
+			}
+		} else {
+			if (tmp[1] < 0) {
+				theta1 = tmp[0];
+				theta2 = tmp[1];
+			} else {
+				theta1 = tmp[2];
+				theta2 = tmp[3];
+			}
+		}
+
 		drawBody(theta1, theta2);
+
+	} else {
+
+		drawBody(theta1, theta2);
+		if (theta2 < 0) { previousState = -1; }
+		else { previousState = 1; }
+
 	}
 }
 
