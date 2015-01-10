@@ -57,6 +57,7 @@ void draw() {
 	} else {
 
 		drawBody(theta1, theta2);
+
 		if (theta2 < 0) { previousState = -1; }
 		else { previousState = 1; }
 
@@ -118,6 +119,13 @@ float[] calcInverseKinematics(float Px, float Py, float a1, float a2) {
 	float th2_2 = -2*atan( sqrt( ( sq( a1 + a2) - ( sq(Px) + sq(Py) ) ) / ( sq(Px) + sq(Py) - sq( a1 - a2 ) ) ) );
 	float th1_1 = atan2(Py, Px) - atan( a2*sin(th2_1) / ( a1 + a2*cos(th2_1) ) );
 	float th1_2 = atan2(Py, Px) - atan( a2*sin(th2_2) / ( a1 + a2*cos(th2_2) ) );
+
+	if ((Float.isNaN(th2_1))||(Float.isNaN(th2_2))||(Float.isNaN(th1_1))||(Float.isNaN(th1_2))) {
+		textFont(smallFont);
+		text("Unsolved Inverse Kinematics.", centerPos - 80, centerPos - 50);
+		th1_1 = th1_2 = theta1;
+		th2_1 = th2_2 = theta2;
+	}
 
 	return new float[]{th1_1, th2_1, th1_2, th2_2};
 }
